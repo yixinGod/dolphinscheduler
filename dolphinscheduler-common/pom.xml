@@ -32,6 +32,20 @@
         <codehaus.janino.version>3.1.0</codehaus.janino.version>
     </properties>
     <dependencies>
+
+
+        <!-- https://mvnrepository.com/artifact/org.apache.directory.api/api-util -->
+        <dependency>
+            <groupId>org.apache.directory.api</groupId>
+            <artifactId>api-util</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.directory.api/api-asn1-api -->
+        <dependency>
+            <groupId>org.apache.directory.api</groupId>
+            <artifactId>api-asn1-api</artifactId>
+        </dependency>
+
         <!-- dolphinscheduler -->
         <dependency>
             <groupId>org.apache.dolphinscheduler</groupId>

@@ -138,6 +138,31 @@
                 <version>2.0.0.AM25</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.apache.directory.server/apacheds-i18n -->
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-i18n</artifactId>
+                <version>2.0.0.AM25</version>
+            </dependency>
+
+
+            <!-- https://mvnrepository.com/artifact/org.apache.directory.api/api-util -->
+            <dependency>
+                <groupId>org.apache.directory.api</groupId>
+                <artifactId>api-util</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.directory.api/api-asn1-api -->
+            <dependency>
+                <groupId>org.apache.directory.api</groupId>
+                <artifactId>api-asn1-api</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+
+
+
+
             <dependency>
                 <groupId>org.java-websocket</groupId>
                 <artifactId>Java-WebSocket</artifactId>
