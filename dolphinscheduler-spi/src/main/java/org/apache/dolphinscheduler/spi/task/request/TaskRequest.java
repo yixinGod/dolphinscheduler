@@ -43,13 +43,13 @@ public class TaskRequest {
     /**
      * task first submit time.
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Los_Angeles")
     private Date firstSubmitTime;
 
     /**
      * task start time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Los_Angeles")
     private Date startTime;
 
     /**
@@ -96,7 +96,7 @@ public class TaskRequest {
     /**
      * process instance schedule time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Los_Angeles")
     private Date scheduleTime;
 
     /**

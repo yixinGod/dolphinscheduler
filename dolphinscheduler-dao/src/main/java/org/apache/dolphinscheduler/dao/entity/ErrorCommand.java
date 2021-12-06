@@ -85,13 +85,13 @@ public class ErrorCommand {
     /**
      * schedule time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "America/Los_Angeles")
     private Date scheduleTime;
 
     /**
      * start time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "America/Los_Angeles")
     private Date startTime;
 
     /**
@@ -102,7 +102,7 @@ public class ErrorCommand {
     /**
      * update time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "America/Los_Angeles")
     private Date updateTime;
 
     /**

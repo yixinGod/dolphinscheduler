@@ -65,7 +65,7 @@ public class DependentTaskProcessor extends BaseTaskProcessor {
     /**
      * dependent date
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Los_Angeles")
     private Date dependentDate;
 
     DependResult result;

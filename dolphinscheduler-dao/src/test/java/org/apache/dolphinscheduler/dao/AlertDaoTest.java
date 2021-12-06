@@ -32,15 +32,17 @@ public class AlertDaoTest {
     @Test
     public void testAlertDao() {
         AlertDao alertDao = DaoFactory.getDaoInstance(AlertDao.class);
-        Alert alert = new Alert();
-        alert.setTitle("Mysql Exception");
-        alert.setContent("[\"alarm time：2018-02-05\", \"service name：MYSQL_ALTER\", \"alarm name：MYSQL_ALTER_DUMP\", "
-            + "\"get the alarm exception.！，interface error，exception information：timed out\", \"request address：http://blog.csdn.net/dreamInTheWorld/article/details/78539286\"]");
-        alert.setAlertGroupId(1);
-        alert.setAlertStatus(AlertStatus.WAIT_EXECUTION);
-        alertDao.addAlert(alert);
+//        Alert alert = new Alert();
+//        alert.setTitle("Mysql Exception");
+//        alert.setContent("[\"alarm time：2018-02-05\", \"service name：MYSQL_ALTER\", \"alarm name：MYSQL_ALTER_DUMP\", "
+//            + "\"get the alarm exception.！，interface error，exception information：timed out\", \"request address：http://blog.csdn.net/dreamInTheWorld/article/details/78539286\"]");
+//        alert.setAlertGroupId(1);
+//        alert.setAlertStatus(AlertStatus.WAIT_EXECUTION);
+//        alertDao.addAlert(alert);
 
-        List<Alert> alerts = alertDao.listWaitExecutionAlert();
+//        List<Alert> alerts = alertDao.listWaitExecutionAlert();
+        List<Alert> alerts = alertDao.getAlertMapper().listAlertByStatus(AlertStatus.EXECUTION_SUCCESS);
+        Alert alert = alertDao.getAlertMapper().selectById(213);
         Assert.assertNotNull(alerts);
         Assert.assertNotEquals(0, alerts.size());
     }

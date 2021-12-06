@@ -31,6 +31,8 @@ import org.apache.dolphinscheduler.spi.alert.AlertData;
 import org.apache.dolphinscheduler.spi.alert.AlertInfo;
 import org.apache.dolphinscheduler.spi.alert.AlertResult;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -74,10 +76,19 @@ public class AlertSender {
                 continue;
             }
             AlertData alertData = new AlertData();
-            alertData.setId(alert.getId())
-                    .setContent(alert.getContent())
-                    .setLog(alert.getLog())
-                    .setTitle(alert.getTitle());
+            try {
+                alertData.setId(alert.getId())
+                        .setContent(alert.getContent()+";http://"+InetAddress.getLocalHost().getHostName()+alert.getUrl()+"; ")
+//                        .setUrl("http://"+InetAddress.getLocalHost().getHostName()+alert.getUrl())
+                        .setLog(alert.getLog())
+                        .setTitle(alert.getTitle());
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                alertData.setId(alert.getId())
+                        .setContent(alert.getContent())
+                        .setLog(alert.getLog())
+                        .setTitle(alert.getTitle());
+            }
 
             for (AlertPluginInstance instance : alertInstanceList) {
 

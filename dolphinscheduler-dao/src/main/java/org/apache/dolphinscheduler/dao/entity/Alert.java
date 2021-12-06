@@ -30,6 +30,53 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 @TableName("t_ds_alert")
 public class Alert {
+
+
+    /*private int projectId;
+    private long projectCode;
+    private long processDefinitionCode;
+    private long processId;
+
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
+
+    public long getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(long projectCode) {
+        this.projectCode = projectCode;
+    }
+
+    public long getProcessDefinitionCode() {
+        return processDefinitionCode;
+    }
+
+    public void setProcessDefinitionCode(long processDefinitionCode) {
+        this.processDefinitionCode = processDefinitionCode;
+    }
+
+    public long getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(long processId) {
+        this.processId = processId;
+    }*/
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     /**
      * primary key
      */
@@ -46,6 +93,9 @@ public class Alert {
      */
     @TableField(value = "content")
     private String content;
+
+    @TableField(value = "url")
+    private String url;
 
     /**
      * alert_status
@@ -183,6 +233,9 @@ public class Alert {
         if (!createTime.equals(alert.createTime)) {
             return false;
         }
+        if (!url.equals(alert.url)) {
+            return false;
+        }
         return updateTime.equals(alert.updateTime) && info.equals(alert.info);
 
     }
@@ -192,6 +245,7 @@ public class Alert {
         int result = id;
         result = 31 * result + title.hashCode();
         result = 31 * result + content.hashCode();
+        result = 31 * result + url.hashCode();
         result = 31 * result + alertStatus.hashCode();
         result = 31 * result + log.hashCode();
         result = 31 * result + alertGroupId;
@@ -202,6 +256,22 @@ public class Alert {
     }
 
     @Override
+    public String toString() {
+        return "Alert{" +
+                "url='" + url + '\'' +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", alertStatus=" + alertStatus +
+                ", log='" + log + '\'' +
+                ", alertGroupId=" + alertGroupId +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", info=" + info +
+                '}';
+    }
+
+    /*@Override
     public String toString() {
         return "Alert{"
                 + "id="
@@ -226,5 +296,5 @@ public class Alert {
                 + ", info="
                 + info
                 + '}';
-    }
+    }*/
 }

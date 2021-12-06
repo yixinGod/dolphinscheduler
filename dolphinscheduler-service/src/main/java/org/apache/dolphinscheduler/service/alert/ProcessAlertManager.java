@@ -22,6 +22,7 @@ import org.apache.dolphinscheduler.common.enums.Flag;
 import org.apache.dolphinscheduler.common.enums.WarningType;
 import org.apache.dolphinscheduler.common.utils.JSONUtils;
 import org.apache.dolphinscheduler.dao.AlertDao;
+import org.apache.dolphinscheduler.dao.ProjectDao;
 import org.apache.dolphinscheduler.dao.entity.Alert;
 import org.apache.dolphinscheduler.dao.entity.ProcessAlertContent;
 import org.apache.dolphinscheduler.dao.entity.ProcessDefinition;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.dolphinscheduler.dao.mapper.ProjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,9 @@ public class ProcessAlertManager {
      */
     @Autowired
     private AlertDao alertDao;
+
+    @Autowired
+    private ProjectDao projectDao;
 
     /**
      * command type convert chinese
@@ -240,6 +245,20 @@ public class ProcessAlertManager {
         alert.setContent(content);
         alert.setAlertGroupId(processInstance.getWarningGroupId());
         alert.setCreateTime(new Date());
+
+        //http://dmva-cal2:12345/dolphinscheduler/#/projects/3691340880896/instance/list/156?code=953437797449728
+        int processId = processInstance.getId();
+        long proceeCode = processInstance.getProcessDefinitionCode();
+        long projectCode = projectDao.selectById(projectUser.getProjectId()).getCode();
+
+        String url = new StringBuilder().append(":12345/dolphinscheduler/#/projects/")
+                .append(projectCode)
+                .append("/instance/list/")
+                .append(processId)
+                .append("?code=")
+                .append(proceeCode).toString();
+        alert.setUrl(url);
+
         alertDao.addAlert(alert);
         logger.info("add alert to db , alert: {}", alert);
     }

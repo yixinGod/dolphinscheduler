@@ -21,7 +21,7 @@
     <sql id="baseSql">
         id
         , title, content, alert_status, log,
-        alertgroup_id, create_time, update_time
+        alertgroup_id, create_time, update_time, url
     </sql>
     <select id="listAlertByStatus" resultType="org.apache.dolphinscheduler.dao.entity.Alert">
         select
