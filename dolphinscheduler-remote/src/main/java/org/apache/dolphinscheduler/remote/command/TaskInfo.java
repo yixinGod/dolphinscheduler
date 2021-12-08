@@ -41,7 +41,7 @@ public class TaskInfo implements Serializable{
     /**
      *  task start time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "America/Los_Angeles")
     private Date startTime;
 
     /**
@@ -69,7 +69,7 @@ public class TaskInfo implements Serializable{
     /**
      *  process instance schedule time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "America/Los_Angeles")
     private Date scheduleTime;
 
     /**

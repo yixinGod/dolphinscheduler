@@ -32,12 +32,12 @@ public class CycleDependency {
     /**
      * last schedule time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "America/Los_Angeles")
     private Date lastScheduleTime;
     /**
      * expiration time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "America/Los_Angeles")
     private Date expirationTime;
     /**
      * cycle enum
