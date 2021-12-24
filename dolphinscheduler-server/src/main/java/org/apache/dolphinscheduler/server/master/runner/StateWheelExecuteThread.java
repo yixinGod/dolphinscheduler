@@ -90,7 +90,7 @@ public class StateWheelExecuteThread extends Thread {
 
         for (TaskInstance taskInstance : this.taskInstanceCheckList.values()) {
             if (TimeoutFlag.OPEN == taskInstance.getTaskDefine().getTimeoutFlag()) {
-                long timeRemain = DateUtils.getRemainTime(taskInstance.getStartTime(), taskInstance.getTaskDefine().getTimeout() * Constants.SEC_2_MINUTES_TIME_UNIT);
+                long timeRemain = DateUtils.getRemainTimeForTimeout(taskInstance.getStartTime(), taskInstance.getTaskDefine().getTimeout() * Constants.SEC_2_MINUTES_TIME_UNIT);
                 if (0 <= timeRemain && processTimeout(taskInstance)) {
                     taskInstanceCheckList.remove(taskInstance.getId());
                     return;
@@ -112,7 +112,7 @@ public class StateWheelExecuteThread extends Thread {
         }
         for (ProcessInstance processInstance : this.processInstanceCheckList.values()) {
 
-            long timeRemain = DateUtils.getRemainTime(processInstance.getStartTime(), processInstance.getTimeout() * Constants.SEC_2_MINUTES_TIME_UNIT);
+            long timeRemain = DateUtils.getRemainTimeForTimeout(processInstance.getStartTime(), processInstance.getTimeout() * Constants.SEC_2_MINUTES_TIME_UNIT);
             if (0 <= timeRemain && processTimeout(processInstance)) {
                 processInstanceCheckList.remove(processInstance.getId());
             }

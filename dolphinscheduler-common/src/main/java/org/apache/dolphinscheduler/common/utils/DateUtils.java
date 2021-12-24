@@ -469,6 +469,18 @@ public final class DateUtils {
         return intervalSeconds - usedTime;
     }
 
+    public static long getRemainTimeForTimeout(Date baseTime, long intervalSeconds) {
+        if (baseTime == null) {
+            return 0;
+        }
+//        long usedTime = (System.currentTimeMillis() - baseTime.getTime()) / 1000;
+//        return intervalSeconds - usedTime;
+        boolean isTimeout = LocalDateTime.now().plusSeconds(-intervalSeconds).isAfter(baseTime.toInstant().atZone(ZoneId.of("America/Los_Angeles")).toLocalDateTime());
+//        boolean isTimeout = baseTime.toInstant().atZone(ZoneId.of("America/Los_Angeles")).toLocalDateTime().isAfter(LocalDateTime.now().plusSeconds(-intervalSeconds));
+
+        return isTimeout?1:-1;
+    }
+
     /**
      * get current time stamp : yyyyMMddHHmmssSSS
      *
