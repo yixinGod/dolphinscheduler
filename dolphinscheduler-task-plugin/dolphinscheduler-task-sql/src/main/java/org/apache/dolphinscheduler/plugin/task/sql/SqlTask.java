@@ -17,12 +17,15 @@
 
 package org.apache.dolphinscheduler.plugin.task.sql;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
 import org.apache.dolphinscheduler.plugin.task.api.AbstractTaskExecutor;
 import org.apache.dolphinscheduler.plugin.task.api.TaskException;
 import org.apache.dolphinscheduler.plugin.task.datasource.BaseConnectionParam;
 import org.apache.dolphinscheduler.plugin.task.datasource.DatasourceUtil;
 import org.apache.dolphinscheduler.plugin.task.util.CommonUtils;
 import org.apache.dolphinscheduler.plugin.task.util.MapUtils;
+import org.apache.dolphinscheduler.spi.enums.DataType;
 import org.apache.dolphinscheduler.spi.enums.DbType;
 import org.apache.dolphinscheduler.spi.enums.TaskTimeoutStrategy;
 import org.apache.dolphinscheduler.spi.task.AbstractParameters;
@@ -46,13 +49,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -88,6 +86,11 @@ public class SqlTask extends AbstractTaskExecutor {
      * default query sql limit
      */
     private static final int LIMIT = 10000;
+
+    /**
+     * default query sql limit
+     */
+    private static final String QUERY_CHECK_RESULT = "query_check_result";
 
     /**
      * Abstract Yarn Task
@@ -203,6 +206,11 @@ public class SqlTask extends AbstractTaskExecutor {
                 String updateResult = String.valueOf(stmt.executeUpdate());
                 result = setNonQuerySqlReturn(updateResult, sqlParameters.getLocalParams());
             }
+
+            logger.info("setGlobalParams start!");
+            setGlobalParams(result);
+            logger.info("setGlobalParams end!");
+
             //deal out params
             sqlParameters.dealOutParam(result);
             postSql(connection, postStatementsBinds);
@@ -211,6 +219,63 @@ public class SqlTask extends AbstractTaskExecutor {
             throw e;
         } finally {
             close(resultSet, stmt, connection);
+        }
+    }
+
+    public List<Map<String, Object>> getListMapByObject(String json) {
+        List<Map<String, Object>> allParams = new ArrayList<>();
+        ArrayNode paramsByJson = JSONUtils.parseArray(json);
+        Iterator<JsonNode> listIterator = paramsByJson.iterator();
+        while (listIterator.hasNext()) {
+            Map<String, Object> param = JSONUtils.toMap(listIterator.next().toString(), String.class, Object.class);
+            allParams.add(param);
+        }
+        return allParams;
+    }
+
+    public void setGlobalParams(String result){
+        try {
+            if (sqlParameters.getSqlType() == SqlType.QUERY.ordinal()){
+                List<Map<String, Object>> sqlResult = getListMapByObject(result);
+                logger.info("sqlResult:"+sqlResult.size());
+                if (sqlResult.size()==1){
+                    //写入全局变量
+                    Map<String, Object> mapResult = sqlResult.get(0);
+                    List<Property> propertyList = Lists.newArrayList();
+
+                    logger.info("mapResult"+mapResult);
+                    /*for (String key :mapResult.keySet()){
+                        Property property = new Property(key, Direct.IN, DataType.VARCHAR,mapResult.get(key)+"");
+                        propertyList.add(property);
+                    }*/
+
+                    mapResult.keySet().stream().forEach(key -> {
+
+                        Property property = new Property(key, Direct.IN, DataType.VARCHAR,mapResult.get(key)+"");
+                        propertyList.add(property);
+
+                    });
+
+                    Object global_params = DruidJdbcUtil.executeSelect(DruidJdbcUtil.getConnection(),
+                            "select global_params from t_ds_process_instance where id = ? ",
+                            Arrays.asList(taskExecutionContext.getProcessInstanceId())).get(0).get("global_params");
+                    if (global_params != null){
+                        logger.info("global_params:"+global_params.toString());
+                        List<Property> propertyList1 = JSONUtils
+                                .toList(global_params.toString(), Property.class);
+                        propertyList.addAll(propertyList1);
+                    }
+
+                    DruidJdbcUtil.executeSql(DruidJdbcUtil.getConnection(),
+                            "update t_ds_process_instance set global_params = ? where id = ? ",
+                            Arrays.asList(JSONUtils.toJsonString(propertyList),taskExecutionContext.getProcessInstanceId())
+                    );
+                    logger.info("propertyList"+JSONUtils.toJsonString(propertyList));
+                }
+            }
+        }catch (Exception e){
+            logger.info("error"+e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -248,6 +313,27 @@ public class SqlTask extends AbstractTaskExecutor {
                 ObjectNode mapOfColValues = JSONUtils.createObjectNode();
                 for (int i = 1; i <= num; i++) {
                     mapOfColValues.set(md.getColumnLabel(i), JSONUtils.toJsonNode(resultSet.getObject(i)));
+
+                    if(num == 1){
+
+                        /*Property property = new Property(QUERY_CHECK_RESULT, Direct.IN, DataType.VARCHAR,JSONUtils.toJsonNode(resultSet.getObject(i)).toString());
+
+                        ProcessInstanceDao processInstanceDao = DaoFactory.getDaoInstance(ProcessInstanceDao.class);
+
+                        ProcessInstance processInstance = processInstanceDao.selectById(taskExecutionContext.getProcessId());
+
+                        List<Property> propertyList = Lists.newArrayList();
+                        propertyList.add(property);
+                        List<Property> propertyList1 = JSONUtils
+                                .toList(processInstance.getGlobalParams(), Property.class);
+                        if (propertyList1!=null && propertyList1.size()>0){
+                            propertyList.addAll(propertyList1);
+                        }
+
+                        processInstanceDao.updateGlobalParams(JSONUtils.toJsonString(propertyList),taskExecutionContext.getProcessId());
+                    */
+                    }
+
                 }
                 resultJSONArray.add(mapOfColValues);
                 rowCount++;

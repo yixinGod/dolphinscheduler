@@ -17,9 +17,7 @@
 
 package org.apache.dolphinscheduler.server.master.runner.task;
 
-import org.apache.dolphinscheduler.common.enums.DependResult;
-import org.apache.dolphinscheduler.common.enums.ExecutionStatus;
-import org.apache.dolphinscheduler.common.enums.TaskType;
+import org.apache.dolphinscheduler.common.enums.*;
 import org.apache.dolphinscheduler.common.process.Property;
 import org.apache.dolphinscheduler.common.task.switchtask.SwitchParameters;
 import org.apache.dolphinscheduler.common.task.switchtask.SwitchResultVo;
@@ -45,12 +43,16 @@ import java.util.stream.Collectors;
 
 public class SwitchTaskProcessor extends BaseTaskProcessor {
 
+
+
     protected final String rgex = "['\"]*\\$\\{(.*?)\\}['\"]*";
 
     private TaskInstance taskInstance;
 
     private ProcessInstance processInstance;
     TaskDefinition taskDefinition;
+
+    private static final String QUERY_CHECK_RESULT = "query_check_result";
 
     MasterConfig masterConfig = SpringApplicationContext.getBean(MasterConfig.class);
 
@@ -186,6 +188,12 @@ public class SwitchTaskProcessor extends BaseTaskProcessor {
     }
 
     public String setTaskParams(String content, String rgex) {
+
+        processInstance = processService.findProcessInstanceDetailById(processInstance.getId());
+
+//        List<TaskInstance> taskInstances = processService.findValidTaskListByProcessId(taskInstance.getProcessInstanceId());
+
+//        taskInstance.getDependency().getDependTaskList().get(0).getDependItemList().get(0)
         Pattern pattern = Pattern.compile(rgex);
         Matcher m = pattern.matcher(content);
         Map<String, Property> globalParams = JSONUtils
@@ -196,6 +204,16 @@ public class SwitchTaskProcessor extends BaseTaskProcessor {
                 .toList(taskInstance.getVarPool(), Property.class)
                 .stream()
                 .collect(Collectors.toMap(Property::getProp, Property -> Property));
+
+        /*if(taskExecutionContext.getDefinedParams()!=null && taskExecutionContext.getDefinedParams().containsKey(QUERY_CHECK_RESULT)){
+            *//**
+             * Property(String prop,Direct direct,DataType type,String value)
+             * [{"prop":"test_mfj","direct":"IN","type":"VARCHAR","value":"123456"}]
+             *//*
+            Property property = new Property(QUERY_CHECK_RESULT, Direct.IN, DataType.VARCHAR,taskExecutionContext.getDefinedParams().get(QUERY_CHECK_RESULT));
+            globalParams.put(QUERY_CHECK_RESULT,property);
+        }*/
+
         if (varParams.size() > 0) {
             varParams.putAll(globalParams);
             globalParams = varParams;
